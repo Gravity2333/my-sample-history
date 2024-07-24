@@ -108,6 +108,8 @@ export interface History {
   back: () => void;
   /** 向前导航一个实体，等价于go(-1) */
   forward: () => void;
+  /** 把to类型转换成url */
+  createHref: (to: To) => string,
   /**
    * 监听listen
    * 当前location变化时，会调用回调函数，可以多次注册事件
@@ -120,3 +122,8 @@ export interface BrowerHistory extends History {}
 
 /** 通过hash方式实现的HashHistory */
 export interface HashHistory extends History {}
+
+/** 默认初始化状态下INDEX VAKLUE */
+export const DEFAULT_INDEX_VALUE = 'DEFAULT_INDEX_VALUE'
+export const DEFAULT_KEY = "default"
+export const DEFAULT_STATE = null
