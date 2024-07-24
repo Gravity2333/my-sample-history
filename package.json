@@ -1,5 +1,5 @@
 {
-  "name": "my-history",
+  "name": "my-sample-history",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,7 +7,7 @@
     "build": "npx webpack"
   },
   "keywords": [],
-  "author": "",
+  "author": "liuze",
   "license": "ISC",
   "dependencies": {
     "copy-webpack-plugin": "^12.0.2",
