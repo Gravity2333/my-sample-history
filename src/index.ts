@@ -45,9 +45,9 @@ export function createBrowserHistory({
     /** state需要从history.state中取出
      *  注意，history中存储的state要满足 HistoryState ，其中的usr才对应Location中的state
      */
-    const state: HistoryState = globalHistory.state;
+    const state: HistoryState = globalHistory.state || {};
     return [
-      state.idx || DEFAULT_INDEX_VALUE,
+      isNaN(+state.idx)?  DEFAULT_INDEX_VALUE: state.idx,
       readOnly<Location>({
         pathname,
         search,

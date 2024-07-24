@@ -5,16 +5,16 @@ export default class EventBus {
   constructor() {}
 
   /** 注册监听 */
-  public listen(listener: any) {
+  public listen = (listener: any) => {
     this.handlers.push(listener);
     return () => {
       this.handlers.filter((handler) => handler !== listener);
     };
-  }
+  };
 
-  public trigger(update: Update) {
+  public trigger = (update: Update) => {
     this.handlers.forEach((handler) => handler(update));
-  }
+  };
 
   public getLength = () => {
     return this.handlers.length;

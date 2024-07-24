@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEMO BROWSER HISTORY</title>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        header {
+            height: 26px;
+            background-color: lightgray;
+        }
+
+        span {
+            cursor: pointer;
+        }
+
+        span:hover {
+            color: red;
+        }
+
+        h4 {
+            padding: 0px 10px;
+            color: white;
+            display: inline-block;
+            margin: 0px;
+        }
+
+        .content {
+            background-color: lightcyan;
+            height: calc(100% - 26px);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h4 id="title">DEMO BROWSER HISTORY</h4>
+        <span id="homeBtn">HOME</span>
+        <span id="aboutBtn">ABOUT</span>
+    </header>
+    <div class="content">Welcome😊</div>
+    <script type="module">
+        import { createBrowserHistory } from "../bundle.js";
+        const history = createBrowserHistory({})
+        window.brwoserHistory = history
+        history.push('/')
+
+        const homeBtn = document.getElementById("homeBtn")
+        const aboutBtn = document.getElementById("aboutBtn")
+        const title = document.getElementById("title")
+        const contentArea = document.querySelector(".content")
+        homeBtn.onclick = () => {
+            history.push('/home')
+        }
+
+        aboutBtn.onclick = () => {
+            history.push({
+                pathname: '/about'
+            })
+        }
+
+        title.onclick = () => {
+            history.push({
+                pathname: '/'
+            })
+        }
+
+        history.listen(({ action, location }) => {
+            console.log(action, location)
+            switch (location.pathname) {
+                case '/home':
+                    contentArea.innerHTML = `<h1>HOME PAGE</h1>`
+                    return;
+                case '/about':
+                    contentArea.innerHTML = `<h1>About PAGE</h1>`
+                    return;
+                case '/':
+                    contentArea.innerHTML = `<h1>Welcome 😊</h1>`
+                    return;
+            }
+        })
+    </script>
+</body>
+
+</html>
