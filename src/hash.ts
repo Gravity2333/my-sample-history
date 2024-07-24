@@ -1,3 +1,3 @@
 import { createHashHistory } from ".";
 
-export default createHashHistory()
+export default createHashHistory({})

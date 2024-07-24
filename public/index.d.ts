@@ -4,4 +4,6 @@ export declare function createBrowserHistory({ globalWindow, }: {
     globalWindow?: Window & typeof globalThis;
 }): BrowerHistory;
 /** 返回一个hashHistory */
-export declare function createHashHistory(): {};
+export declare function createHashHistory({ globalWindow, }: {
+    globalWindow?: Window & typeof globalThis;
+}): BrowerHistory;
