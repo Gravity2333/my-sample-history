@@ -1,3 +1,5 @@
+import EventCenter from "./eventCenter"
+
 export enum Action {
     // 历史变动 不分方向 默认
     POP = 'POP',
@@ -14,7 +16,7 @@ export type Search = string
 /** hash #后 */
 export type Hash = string
 /** 唯一的key */
-export type Key = string
+export type Key = string | number
 /** state 表示每个history位置携带的信息 类型任意 */
 export type State = any
 /** 表示当前路由路径，包含pathname, search, hash */
@@ -88,18 +90,61 @@ const POP_STATE = 'popstate'
 /** 卸载之前beforeunload */
 const BEFORE_UNLOAD = 'beforeunload'
 
+/** readonly函数 */
+function readOnly<T>(obj: T) {
+    return Object.freeze(obj) as T
+}
+
+/** HistoryState history的state在window.history中的存储格式 */
+type HistoryState = {
+    usr: any,
+    key: number,
+    idx: number
+}
+
+
 /** 创建browser路由 */
-export function createBrowserHistory({ window }: {
+export function createBrowserHistory(options: {
     window?: Window
-}) {
+} = {}) {
     /** 设置默认window */
-    if (window) {
-        document.defaultView != window
+    if (options?.window) {
+        document.defaultView != options?.window
     }
     /** 获得window.history对象 其中可以存储location */
     const globalHistory = document.defaultView!.history
 
-    
+    /** 获取当前的location 和 index */
+    function getCurrentLocationAndIndex() {
+        const { pathname, hash, search } = window.location
+        const { state } = globalHistory as { state: HistoryState }
+        return [
+            readOnly<Location>({
+                pathname,
+                hash,
+                search,
+                state: state.usr || null,
+                key: state.key || 'default',
+            }),
+            state.idx
+        ] as [Location, number]
+    }
+
+    /** 创建监听和block事件函数 */
+    const listener = new EventCenter()
+    const blocker = new EventCenter()
+
+    /** 获取初始化的location和index */
+    let [location, index] = getCurrentLocationAndIndex()
+
+    if (index === void 0) {
+        /** 初始化 idx赋 0 */
+        index = 0
+        globalHistory.replaceState({
+            ...globalHistory.state,
+            idx: index
+        }, "")
+    }
 
 }
 
