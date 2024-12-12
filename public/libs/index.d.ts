@@ -75,4 +75,4 @@ export declare function createBrowserHistory({ window }?: {
  */
 export declare function createHashHistory({ window }: {
     window?: Window;
-}): void;
+}): History;

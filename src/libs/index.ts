@@ -436,7 +436,8 @@ export function createHashHistory({
     /** 注意区别 这里是从location.hash取hash信息 并且自己Parse */
     const hashStr = window.location.hash
     const state = globalHistory.state as HistoryState
-    const { pathname, search, hash } = parsePath(hashStr)
+    /** 这里注意 hashStr为 #/aaa 的形式 需要从第一个开始截取 */
+    const { pathname, search, hash } = parsePath(hashStr.slice(1))
     return [
       readOnly<Location>({
         pathname,
@@ -632,7 +633,9 @@ export function createHashHistory({
     go,
     back: () => { go(-1) },
     forward: () => { go(1) },
-    listen: listener.listen,
+    listen: (fn: Listener) => {
+      return listener.listen(fn)
+    },
     block: (fn: Blocker) => {
       const unblock = blocker.listen(fn)
 
