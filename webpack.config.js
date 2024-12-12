@@ -1,14 +1,16 @@
 const path = require("path");
-const CopyWebpackPlugin = require('copy-webpack-plugin')
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {
-  mode: "none",
-  entry: "./src/libs/index.ts", // 项目的入口文件
+  mode: "development",
+  entry: "./src/index.ts", // 项目的入口文件
   output: {
     filename: "bundle.js", // 编译后的文件名
     path: path.resolve(__dirname, "public"), // 编译后的文件路径
     module: true,
-    libraryTarget:'module',
+    libraryTarget: "module",
     clean: true,
+    publicPath:'/center'
   },
   experiments: {
     outputModule: true,
@@ -34,5 +36,12 @@ module.exports = {
         },
       ],
     }),
-  ]
+
+    new HtmlWebpackPlugin({ template: "./index.html" }),
+  ],
+  devServer: {
+    port: 8888,
+    hot: false,
+    historyApiFallback: true,
+  },
 };

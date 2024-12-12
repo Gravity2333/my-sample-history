@@ -61,6 +61,7 @@ export interface History {
   location: Location;
 
   /** createHref 创建href */
+  /** Returns a string suitable for use as an <a href> value that will navigate to the given destination. */
   createHref: (to: To) => string;
 
   /** push */
