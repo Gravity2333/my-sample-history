@@ -104,6 +104,15 @@ function warning(message: string) {
   console.error(message);
 }
 
+/**
+ * 处理浏览器url回撤跳转的情况，让浏览器弹出弹框提示用户
+ * @param e
+ */
+function handleBeforeUnload(e: any) {
+  e.preventDefault();
+  e.returnValue = "";
+}
+
 /** HistoryState history的state在window.history中的存储格式 */
 type HistoryState = {
   usr: any;
@@ -189,10 +198,10 @@ export function createBrowserHistory(
         pathname,
         hash,
         search,
-        state: state.usr || null,
-        key: state.key || "default",
+        state: state?.usr || null,
+        key: state?.key || "default",
       }),
-      state.idx,
+      state?.idx,
     ] as [Location, number];
   }
 
@@ -342,18 +351,21 @@ export function createBrowserHistory(
    *   则location.idx = 8 此时index - location.idx = -3 那么需要先回退-3 执行blocker
    *   同时封装retry为 go(-(index-location.idx)) 反向同理
    */
-  let blockTx: Transition;
+  let blockTx: Transition | null = null;
   /** blockTx是个全局的transition 下面函数做的事情就是
    * 1. 如果blockTx存在，则调用blocker，blocker中处理 在允许跳转之后需要unblock 再retry 否则可能死循环
    * 2. 如果不存在blockTx 判断是否有blocker 如果有责创建blockTx 并且回退
    */
   window.addEventListener(POP_STATE, () => {
     if (blockTx) {
+      // 运行blocker逻辑
+      blocker.call(blockTx);
+      blockTx = null;
     } else {
       if (blocker.length > 0) {
         /** 回退 */
         const [nextLocation, nextIndex] = getCurrentLocationAndIndex();
-        if (nextIndex === void 0) {
+        if (nextIndex !== void 0) {
           const backDelta = index - nextIndex;
           blockTx = {
             location: nextLocation,
@@ -392,7 +404,17 @@ export function createBrowserHistory(
       return listener.listen(fn);
     },
     block: (fn: Blocker) => {
-      return blocker.listen(fn);
+      const unbloack = blocker.listen(fn);
+
+      /** 需要处理跳转到站外的情况 url enter的情况 */
+      if (blocker?.length > 0) {
+        window.addEventListener(BEFORE_UNLOAD, handleBeforeUnload);
+      }
+      /** 返回unblock */
+      return () => {
+        window.removeEventListener(BEFORE_UNLOAD, handleBeforeUnload);
+        unbloack();
+      };
     },
   };
 }

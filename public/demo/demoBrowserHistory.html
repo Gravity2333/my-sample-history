@@ -48,16 +48,24 @@
         <h4 id="title">DEMO BROWSER HISTORY</h4>
         <span id="homeBtn">HOME</span>
         <span id="aboutBtn">ABOUT</span>
+        <span id="formButton">FROM</span>
+        <button> Back </button>
     </header>
+
     <div class="content">Welcome😊</div>
+
+
     <script type="module">
         import { createBrowserHistory } from "../bundle.js";
         const history = createBrowserHistory({})
+        console.log(history)
+        window.isSubmit = false
         window.brwoserHistory = history
         history.push('/')
 
         const homeBtn = document.getElementById("homeBtn")
         const aboutBtn = document.getElementById("aboutBtn")
+        const formButton = document.getElementById("formButton")
         const title = document.getElementById("title")
         const contentArea = document.querySelector(".content")
         homeBtn.onclick = () => {
@@ -76,6 +84,13 @@
             })
         }
 
+        formButton.onclick = () => {
+            history.push({
+                pathname: '/form'
+            })
+        }
+
+
         history.listen(({ action, location }) => {
             console.log(action, location)
             switch (location.pathname) {
@@ -85,12 +100,45 @@
                 case '/about':
                     contentArea.innerHTML = `<h1>About PAGE</h1>`
                     return;
+                case '/form':
+                    contentArea.innerHTML = `
+                           <div>
+                             <h2>register</h2>
+                            <form action="/upload">
+                                username <input />
+                                password <input type="password" />
+                            </form>
+                            <button id="formSubmit">Submit</button>
+                            </div>
+
+                    `
+                    window.isSubmit = false
+                    const formSubmitBtn = document.getElementById('formSubmit')
+                    const unblock = window.brwoserHistory.block(function ({ retry }) {
+                        if (confirm("系统不会保存数据！确定离开吗？")) {
+                            // unblock
+                            unblock()
+                            retry()
+                        }
+                    })
+                    formSubmitBtn.onclick = () => {
+                        if (!window.isSubmit) {
+                            alert('info submitted!')
+                            window.isSubmit = true
+                            formSubmitBtn.style.color = 'gray'
+                            formSubmitBtn.style.cursor = 'pointer'
+                            formSubmitBtn.innerHTML = '已经提交'
+                            unblock()
+                        }
+                    }
+                    return
                 case '/':
                     contentArea.innerHTML = `<h1>Welcome 😊</h1>`
                     return;
             }
         })
     </script>
+
 </body>
 
 </html>

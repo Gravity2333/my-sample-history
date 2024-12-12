@@ -2,7 +2,7 @@
   "name": "my-sample-history",
   "version": "1.0.0",
   "description": "",
- "main": "public/bundle.js",
+  "main": "public/bundle.js",
   "scripts": {
     "build": "npx webpack"
   },
@@ -16,6 +16,7 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
-    "@types/uuid": "^10.0.0"
+    "@types/uuid": "^10.0.0",
+    "webpack-cli": "^5.1.4"
   }
 }

@@ -2,7 +2,7 @@ const path = require("path");
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 module.exports = {
   mode: "none",
-  entry: "./src/index.ts", // 项目的入口文件
+  entry: "./src/libs/index.ts", // 项目的入口文件
   output: {
     filename: "bundle.js", // 编译后的文件名
     path: path.resolve(__dirname, "public"), // 编译后的文件路径
