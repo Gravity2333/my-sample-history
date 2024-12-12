@@ -24,7 +24,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \**********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! history */ \"./node_modules/history/index.js\");\n\n// const history = createHashHistory()\n// debugger\n// console.log(history.createHref(\"/aaaa\"))\n// // debugger\n// history.push('/aaa')\nconst history = (0,history__WEBPACK_IMPORTED_MODULE_0__.createBrowserHistory)();\ndebugger;\nconsole.log(history.createHref(\"/aaaa\"));\n// debugger\nhistory.push('/aaa');\n\n\n//# sourceURL=webpack://my-sample-history/./src/index.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var history__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! history */ \"./node_modules/history/index.js\");\n\nconst history = (0,history__WEBPACK_IMPORTED_MODULE_0__.createHashHistory)();\n// debugger\nconsole.log(history.createHref(\"/aaaa\"));\ndebugger;\nhistory.push('/aaa');\n// const history = createBrowserHistory()\n// debugger\n// console.log(history.createHref(\"/aaaa\"))\n// // debugger\n// history.push('/aaa')\n\n\n//# sourceURL=webpack://my-sample-history/./src/index.ts?");
 
 /***/ }),
 
