@@ -66,10 +66,13 @@ export interface History {
     block: (blocker: Blocker) => () => void;
 }
 /** 创建browser路由 */
-export declare function createBrowserHistory(options?: {
+export declare function createBrowserHistory({ window }?: {
     window?: Window;
 }): History;
-/** 创建hash路由 */
+/** 创建hash路由
+ *  hash路由以 #/ 记录路由信息，其内容也包含 #/pathname?search#hash
+ *  由于hash变动，不会导致浏览器重新请求资源，所以刷新页面的时候不会出现404问题，不需要后端设置默认index.html路径 / historyApiFallback
+ */
 export declare function createHashHistory({ window }: {
     window?: Window;
-}): void;
+}): History;
