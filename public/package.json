@@ -1,0 +1,9 @@
+{
+  "name": "my-sample-history",
+  "version": "1.0.0",
+  "description": "a smaple imple of histoory",
+  "main": "history.js",
+  "keywords": [],
+  "author": "liuze",
+  "license": "ISC"
+}

@@ -1,54 +1,66 @@
-# my-sample-history 
-## 手动实现一个简单的history
-包含 BrowserHistory 和 HashHistroy 
-实现了两种模式的监听路由变动，可以在页面不刷新的情况下改变并且监听路由，是实现前端路由的基本!
+# History Library Demo
 
-相比于react-router 官方的history-dev 实现上稍有不同但是功能类似，去掉了类似block等拦截功能，简化了代码并且加入了注释，更方便了解源码运行原理
+This is a simple library to demonstrate the usage of both **Hash History** and **Browser History** for client-side routing. This demo shows how to create and manipulate navigation history using custom `hash` and `browser` history objects.
 
-#### 使用 
+## Features
+- Supports **Hash History**: Routing with URLs containing `#` (e.g., `/home#page1`).
+- Supports **Browser History**: Clean URLs (e.g., `/home`).
+
+## Setup and Installation
+
+1. **Clone the repository**:
+
+   ```bash
+   git clone <your-repository-url>
+   cd <your-project-directory>
+
+### Install dependencies:
+
+``` bash
+Copy code
 npm install
+Build the project:
+```
+To bundle and prepare the project for production, run the following command:
+```
+```bash
+Copy code
 npm run build
+Run the development server:
+```
+To start the local development server and view the DEMO, use:
 
-详见public/demo
-
-#### browserHistroy
-```javascript
-        import { createBrowserHistory } from "../bundle.js";
-        const history = createBrowserHistory({})
-        // 初始化路径
-        history.push('/')
-
-        // 绑定按钮
-        const homeBtn = document.getElementById("homeBtn")
-        const aboutBtn = document.getElementById("aboutBtn")
-
-        // 注册按钮点击事件，跳转
-        homeBtn.onclick = () => {
-            history.push('/home')
-        }
-
-        aboutBtn.onclick = () => {
-            history.push({
-                pathname: '/about'
-            })
-        }
-
-
-        // 注册监听，改变渲染
-        history.listen(({ action, location }) => {
-            console.log(action, location)
-            switch (location.pathname) {
-                case '/home':
-                    contentArea.innerHTML = `<h1>HOME PAGE</h1>`
-                    return;
-                case '/about':
-                    contentArea.innerHTML = `<h1>About PAGE</h1>`
-                    return;
-                case '/':
-                    contentArea.innerHTML = `<h1>Welcome 😊</h1>`
-                    return;
-            }
-        })
+```bash
+Copy code
+npm run dev
 ```
 
+### Usage
+In the src/history.js file, the createHashHistory and createBrowserHistory functions are provided to create different types of history objects. Here's an example of how to use them:
 
+Example Code:
+```javascript
+Copy code
+import { createBrowserHistory } from "./history.js";
+import { createHashHistory } from "./history.js";
+
+// Create an instance of Hash History
+const hashHistory = createHashHistory({});
+
+// Create an instance of Browser History
+const browserHistory = createBrowserHistory({});
+
+// Choose which history you want to use
+let history = hashHistory;
+
+// Navigate to '/home' using Hash History
+history.push('/home');
+
+// Alternatively, you can switch to Browser History
+// history = browserHistory;
+// history.push('/home');
+```
+### How It Works:
+Hash History: When using the hash history, URLs will include a # symbol, making it possible to handle client-side routing without refreshing the page.
+
+Browser History: This provides a more standard way of using paths in URLs (i.e., /home), which is more SEO-friendly and compatible with most server-side routing setups.

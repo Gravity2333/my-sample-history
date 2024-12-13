@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEMO HISTORY</title>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background-color: #333;
+      color: white;
+    }
+
+    /* Title and Navigation */
+    #title {
+      font-size: 1.8em;
+      margin: 0;
+    }
+
+    #homeBtn, #aboutBtn, #formButton {
+      margin-left: 20px;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    #homeBtn:hover, #aboutBtn:hover, #formButton:hover {
+      color: #007BFF;
+    }
+
+    /* Routing Mode Switcher */
+    .route-options {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      margin-left: 40px;
+    }
+
+    .label {
+      font-size: 1.1em;
+      margin-right: 10px;
+    }
+
+        .content {
+            width: 100%;
+            height: calc(100% - 26px);
+            overflow: auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2em auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            margin-bottom: 2em;
+        }
+
+        .section h2 {
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .section p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .section {
+            margin-bottom: 2em;
+        }
+
+        .section h2 {
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .section p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .code-block {
+            background-color: #282c34;
+            color: white;
+            padding: 1em;
+            border-radius: 8px;
+            font-family: Consolas, monospace;
+            font-size: 1em;
+            margin-top: 1.5em;
+            word-wrap: break-word;
+        }
+
+
+        span {
+            cursor: pointer;
+        }
+
+        span:hover {
+            color: white;
+        }
+
+        h4 {
+            padding: 0px 10px;
+            color: white;
+            display: inline-block;
+            margin: 0px;
+        }
+
+        .content {
+            background-color: lightcyan;
+            height: calc(100% - 26px);
+        }
+
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 25px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 25px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 19px;
+            width: 19px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #4caf50;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(24px);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #007BFF;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 12px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:active {
+            background-color: #00408a;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group input {
+            margin-bottom: 10px;
+        }
+
+
+        footer {
+            text-align: center;
+            padding: 1em;
+            background-color: #333;
+            color: white;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <header style="display: flex;justify-content: space-between;">
+        <div>
+            <h4 id="title">DEMO HISTORY</h4>
+            <span id="homeBtn">HOME</span>
+            <span id="aboutBtn">ABOUT</span>
+            <span id="formButton">FORM PAGE </span>
+        </div>
+
+        <div>
+            选择路由模式
+            <label class="label">Hash</label>
+            <label class="switch">
+                <input type="checkbox" id="routeSwitch">
+                <span class="slider"></span>
+            </label>
+            <label class="label">Browser</label>
+            <span id="frontBtn" style="margin: 0px 10px;"> Front </span>
+            <span id="backBtn"> Back </span>
+        </div>
+
+    </header>
+    <div class="content"></div>
+    <footer>
+        © 2024 Gravity2333
+    </footer>
+    <script type="module">
+        import { createBrowserHistory } from "./history.js";
+        import { createHashHistory } from "./history.js";
+        const hashHistroy = createHashHistory({})
+        const browserHistory = createBrowserHistory({})
+
+        let history = hashHistroy
+        window.isSubmit = false
+        window.brwoserHistory = history
+
+        const homeBtn = document.getElementById("homeBtn")
+        const aboutBtn = document.getElementById("aboutBtn")
+        const formButton = document.getElementById("formButton")
+        const frontBtn = document.getElementById("frontBtn")
+        const backBtn = document.getElementById("backBtn")
+        const title = document.getElementById("title")
+        const contentArea = document.querySelector(".content")
+        const routeSwitch = document.getElementById('routeSwitch');
+        const labels = document.querySelectorAll('.label');
+
+        listenFn()
+        history.push('/home')
+
+        // 监听开关切换事件
+        routeSwitch.addEventListener('change', () => {
+            if (routeSwitch.checked) {
+                console.log('选择了 Browser 路由模式');
+                labels[0].style.color = 'gray';
+                labels[1].style.color = 'black';
+                history = createBrowserHistory({})
+                window.isSubmit = false
+                window.brwoserHistory = history
+                listenFn()
+                history.push('/home')
+
+            } else {
+                console.log('选择了 Hash 路由模式');
+                labels[0].style.color = 'black';
+                labels[1].style.color = 'gray';
+                history = createHashHistory({})
+                window.isSubmit = false
+                window.brwoserHistory = history
+                listenFn()
+                history.push('/home')
+
+            }
+        });
+
+        function listenFn() {
+            frontBtn.onclick = () => {
+                history.forward()
+            }
+
+            backBtn.onclick = () => {
+                history.back()
+            }
+
+            homeBtn.onclick = () => {
+                history.push('/home')
+            }
+
+            aboutBtn.onclick = () => {
+                history.push({
+                    pathname: '/about'
+                })
+            }
+
+            title.onclick = () => {
+                history.push({
+                    pathname: '/home'
+                })
+            }
+
+            formButton.onclick = () => {
+                history.push({
+                    pathname: '/form'
+                })
+            }
+
+            history.listen(({ action, location }) => {
+                console.log(action, location)
+                switch (location.pathname) {
+                    case '/home':
+                        contentArea.innerHTML = `
+                        
+                          <div class="container">
+    <div class="section">
+      <h2>Understanding Routing in Web Apps</h2>
+      <p class="intro-text">
+        In modern web applications, routing plays a crucial role in determining how users navigate between different views or pages.
+        There are two common routing strategies used in front-end development: Hash Routing and Browser Routing. Let's explore both.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Hash Routing</h2>
+      <p>
+        Hash routing relies on the URL hash (the part of the URL after the # symbol) to determine the current view.
+        For example, a URL like <code>http://example.com/#/home</code> means that the browser is displaying the 'home' view, but it is still on the same page. 
+        It does not cause the page to reload and is ideal for applications where a server is not required to process navigation.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Browser Routing</h2>
+      <p>
+        Browser routing, on the other hand, uses the HTML5 History API to manipulate the browser's history without reloading the page.
+        This allows for more natural URLs (like <code>http://example.com/home</code>) and makes it easier to handle server-side routes.
+        It provides a cleaner user experience with more control over the URL, but requires server configuration for correct handling of the routes.
+      </p>
+    </div>
+    </div> `
+
+                        return;
+                    case '/about':
+                        contentArea.innerHTML = `
+                        <div class="container">
+                         <!-- About Section -->
+    <div class="section">
+      <h2>About the Author</h2>
+      <p>
+        This project was created by <strong>Gravity2333</strong>, a passionate web developer and software enthusiast. 
+        The goal of this project is to demonstrate a simple yet powerful setup for routing, along with useful tips for modern web applications.
+      </p>
+    </div>
+
+    <!-- Build and Demo Section -->
+    <div class="section">
+      <h2>How to Run the Project</h2>
+      <p>
+        To build the project and run it locally, follow the instructions below:
+      </p>
+
+      <div class="code-block">
+        <strong>1. Install dependencies:</strong> <br>
+        <code>npm install</code>
+      </div>
+
+      <div class="code-block">
+        <strong>2. Build the project:</strong> <br>
+        <code>npm run build</code>
+      </div>
+
+      <div class="code-block">
+        <strong>3. Start the demo:</strong> <br>
+        <code>npm run start</code>
+      </div>
+
+      <p>
+        After running these commands, the demo will be available locally. You can navigate to the project URL in your browser to see it in action!
+      </p>
+    </div>
+
+                        </div>
+                        `
+                        return;
+                    case '/form':
+                        contentArea.innerHTML = `
+                            <div class="container">
+    <h2>Register</h2>
+    <h2> 表单页 展示block的用法，在用户没有完成提交之前，跳出会有提示 </h2>
+    <form action="/upload" method="POST">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required placeholder="Enter your username" />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required placeholder="Enter your password" />
+      </div>
+
+      <button type="submit" id="formSubmit">Submit</button>
+    </form>
+  </div>
+
+                    `
+                        window.isSubmit = false
+                        const formSubmitBtn = document.getElementById('formSubmit')
+                        const unblock = window.brwoserHistory.block(function ({ retry }) {
+                            if (confirm("系统不会保存数据！确定离开吗？")) {
+                                // unblock
+                                unblock()
+                                retry()
+                            }
+                        })
+                        formSubmitBtn.onclick = () => {
+                            if (!window.isSubmit) {
+                                alert('info submitted!')
+                                window.isSubmit = true
+                                formSubmitBtn.style.color = 'gray'
+                                formSubmitBtn.style.cursor = 'pointer'
+                                formSubmitBtn.innerHTML = '已经提交'
+                                unblock()
+                            }
+                        }
+                        return
+                    case '/':
+                        contentArea.innerHTML = `<h1>Welcome 😊</h1>`
+                        return;
+                }
+            })
+        }
+
+    </script>
+
+
+</body>
+
+</html>

@@ -2,10 +2,9 @@
   "name": "my-sample-history",
   "version": "1.0.0",
   "description": "",
-  "main": "public/bundle.js",
   "scripts": {
-    "build": "npx webpack",
-    "start": "webpack-dev-server"
+    "build": "npx webpack --config ./config/webpack.build.js",
+    "start": "npx webpack-dev-server --config ./config/webpack.dev.js"
   },
   "keywords": [],
   "author": "liuze",
@@ -20,7 +19,9 @@
   },
   "devDependencies": {
     "@types/uuid": "^10.0.0",
+    "events": "^3.3.0",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.2.0"
+    "webpack-dev-server": "^5.2.0",
+    "webpack-merge": "^6.0.1"
   }
 }
