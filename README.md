@@ -1,4 +1,5 @@
 # my-sample-history 
+## 具体实现细节和Demo 见learn history分支
 ## 手动实现一个简单的history
 包含 BrowserHistory 和 HashHistroy 
 实现了两种模式的监听路由变动，可以在页面不刷新的情况下改变并且监听路由，是实现前端路由的基本!
