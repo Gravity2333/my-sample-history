@@ -4,7 +4,7 @@ const baseConfig = require("./webpack.default");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = merge(baseConfig, {
-  mode: "development",
+  mode: "none",
   entry: "./src/index.ts",
   output: {
     filename: "history.js", // 编译后的文件名

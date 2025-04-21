@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <!-- <base href='/center'> -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DEMO HISTORY</title>
@@ -275,7 +276,7 @@
         import { createHashHistory } from "./history.js";
         const hashHistroy = createHashHistory({})
         const browserHistory = createBrowserHistory({})
-
+        window.historyObj  = hashHistroy||brwoserHistory
         let history = hashHistroy
         window.isSubmit = false
         window.brwoserHistory = history
@@ -338,6 +339,7 @@
             }
 
             title.onclick = () => {
+                console.log(window)
                 history.push({
                     pathname: '/home'
                 })

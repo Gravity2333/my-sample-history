@@ -178,13 +178,11 @@ function parsePath(pathStr: string): Path {
 }
 
 /** 创建browser路由 */
-export function createBrowserHistory(
-  {
-    window = document.defaultView!
-  }: {
-    window?: Window;
-  } = {}
-): History {
+export function createBrowserHistory({
+  window = document.defaultView!,
+}: {
+  window?: Window;
+} = {}): History {
   /** 获得window.history对象 其中可以存储location */
   const globalHistory = window.history;
 
@@ -232,6 +230,8 @@ export function createBrowserHistory(
 
   /**
    * createHref方法 支持传入
+   * href 是一个完整的 URL 字符串，用于 <a href> 或 history.pushState/replaceState 等操作。它的具体格式取决于使用的是 browser history 还是 hash history
+   * 在这个代码中，createHref 生成的 URL 不包含协议（http:// 或 https://）、主机（host）和端口（port），它只生成 路径部分（pathname + search + hash）。
    * @param {to} To
    * @returns href string
    */
@@ -425,29 +425,31 @@ export function createBrowserHistory(
  *  由于hash变动，不会导致浏览器重新请求资源，所以刷新页面的时候不会出现404问题，不需要后端设置默认index.html路径 / historyApiFallback
  */
 export function createHashHistory({
-  window = document.defaultView!
-}: { window?: Window }): History {
-  const globalHistory = window.history
+  window = document.defaultView!,
+}: {
+  window?: Window;
+}): History {
+  const globalHistory = window.history;
 
   /** 获得当前的Location和index  注意 这里需要从location.hash 获取 并且使用parsePath解析
    *  hash模式下，由于真正的路由信息在# 后 所以浏览器不会自动解析好Path: {pathname,search,hash}
    */
   function getCurrentLocationAndIndex() {
     /** 注意区别 这里是从location.hash取hash信息 并且自己Parse */
-    const hashStr = window.location.hash
-    const state = globalHistory.state as HistoryState
+    const hashStr = window.location.hash;
+    const state = globalHistory.state as HistoryState;
     /** 这里注意 hashStr为 #/aaa 的形式 需要从第一个开始截取 */
-    const { pathname, search, hash } = parsePath(hashStr.slice(1))
+    const { pathname, search, hash } = parsePath(hashStr.slice(1));
     return [
       readOnly<Location>({
         pathname,
         search,
         hash,
         state: state?.usr,
-        key: state?.key
+        key: state?.key,
       }),
-      state?.idx
-    ] as const
+      state?.idx,
+    ] as const;
   }
 
   /**
@@ -455,15 +457,15 @@ export function createHashHistory({
    * 传入to，state
    */
   function getNextLocation(to: To, state: any) {
-    const nextPath = typeof to === 'string' ? parsePath(to) : to
+    const nextPath = typeof to === "string" ? parsePath(to) : to;
     return readOnly<Location>({
       pathname: window.location.pathname,
-      search: '',
-      hash: '',
+      search: "",
+      hash: "",
       ...nextPath,
       state,
-      key: generateUniqueKey()
-    })
+      key: generateUniqueKey(),
+    });
   }
 
   /**
@@ -474,24 +476,24 @@ export function createHashHistory({
    *  ...</head>
    * 当base包含属性href时，html中的 “相对” 路径计算，都会基于这个base的href
    * 比如 <a href="./user"/> 则 解析出来的地址 不是 http://example.com/user 而是 /center/user 这是一个绝对路径了 拼接上origin为http://example.com/center/user
-   * 
+   *
    * 在使用browser history时，由于history.pushState/repalceState时，都是传入一个绝对的url 也就是解析出来的path 所以base.href不起作用
    * 但是，在使用hash router的时候，由于pushState/replaceState传入的路径是一个 #开头的字符串 即#/aaa/bbb/ccc 浏览器不会认为这是一个绝对路径，如果不存在base 则会将其加到当前路径下 http://example#/aaa/bbb/ccc
-   * 如果存在base 则会按照计算相对路径的方式 结合base生成一个绝对路径 即/center#/aaa/bbb/ccc => http://example/center#/aaa/bbb/ccc 就会凭空多出一个/center/ 
+   * 如果存在base 则会按照计算相对路径的方式 结合base生成一个绝对路径 即/center#/aaa/bbb/ccc => http://example/center#/aaa/bbb/ccc 就会凭空多出一个/center/
    * 所以在这里就是 忽略base的影响，如果base标签存在 则直接返回一个绝对路径
    */
   function getBaseHref() {
-    const base = document.querySelector('base')
-    let baseHref = ""
+    const base = document.querySelector("base");
+    let baseHref = "";
 
     if (base && base.href) {
-      const url = window.location.href
-      const hashIndex = url.indexOf("#")
-
-      baseHref = hashIndex >= 0 ? url.slice(0, hashIndex) : url
+      const url = window.location.href;
+      const hashIndex = url.indexOf("#");
+      baseHref = hashIndex >= 0 ? url.slice(0, hashIndex) : url;
+      return baseHref
     }
 
-    return ""
+    return "";
   }
 
   /** 用来创建一个Href信息
@@ -499,7 +501,7 @@ export function createHashHistory({
    */
   function createHref(to: To) {
     /** 这里多了一个getBaseHref方法 和browser不同 */
-    return getBaseHref() + '#' + (typeof to === "string" ? to : createPath(to));
+    return getBaseHref() + "#" + (typeof to === "string" ? to : createPath(to));
   }
 
   /** 获取GlobalHistory格式的state以及存入GlobalHistory的url */
@@ -508,15 +510,15 @@ export function createHashHistory({
       readOnly<HistoryState>({
         usr: location.search,
         key: location.key,
-        idx: index
+        idx: index,
       }),
-      createHref(location)
-    ] as const
+      createHref(location),
+    ] as const;
   }
 
   /** 判断事务是否允许运行 */
   function allowTx(tx: Transition) {
-    return !blocker?.length || (blocker.call(tx), false)
+    return !blocker?.length || (blocker.call(tx), false);
   }
 
   /** 应用事务 */
@@ -525,104 +527,107 @@ export function createHashHistory({
     /** 更新index和next */
     [location, index] = getCurrentLocationAndIndex();
     /** call listenener */
-    listener.call({ location, action } as Update)
+    listener.call({ location, action } as Update);
   }
 
   /** 初始化Action 默认为Action.POP */
-  let action = Action.POP
+  let action = Action.POP;
   /** 获取index和location */
-  let [location, index] = getCurrentLocationAndIndex()
+  let [location, index] = getCurrentLocationAndIndex();
   /** 创建listener和blocker事件中心 */
-  const listener = new EventCenter<Listener>()
-  const blocker = new EventCenter<Blocker>()
+  const listener = new EventCenter<Listener>();
+  const blocker = new EventCenter<Blocker>();
 
   if (index === void 0) {
     /** 不存在idx 初始化index */
-    index = 0
+    index = 0;
     /** replace idx到当前history.state中 */
-    globalHistory.replaceState({ ...globalHistory.state, idx: index }, "")
+    globalHistory.replaceState({ ...globalHistory.state, idx: index }, "");
   }
 
-
   function push(to: To, state: any) {
-    const nextLocation = getNextLocation(to, state)
+    const nextLocation = getNextLocation(to, state);
     function retry() {
-      push(to, state)
+      push(to, state);
     }
     /** 是否允许事务 */
     if (allowTx({ location: nextLocation, action: Action.PUSH, retry })) {
       /** 生成HistoryState */
-      const [nextHistoryState, url] = getHistoryStateAndUrl(nextLocation, index + 1)
+      const [nextHistoryState, url] = getHistoryStateAndUrl(
+        nextLocation,
+        index + 1
+      );
 
-      globalHistory.pushState(nextHistoryState, "", url)
+      globalHistory.pushState(nextHistoryState, "", url);
 
       /** 更改状态 */
-      applyTx(Action.PUSH)
+      applyTx(Action.PUSH);
     }
   }
 
   function replace(to: To, state: any) {
-    const nextLocation = getNextLocation(to, state)
+    const nextLocation = getNextLocation(to, state);
     function retry() {
-      push(to, state)
+      push(to, state);
     }
     /** 是否允许事务 */
     if (allowTx({ location: nextLocation, action: Action.REPLACE, retry })) {
       /** 生成HistoryState */
-      const [nextHistoryState, url] = getHistoryStateAndUrl(nextLocation, index + 1)
+      const [nextHistoryState, url] = getHistoryStateAndUrl(
+        nextLocation,
+        index + 1
+      );
 
-      globalHistory.replaceState(nextHistoryState, "", url)
+      globalHistory.replaceState(nextHistoryState, "", url);
 
       /** 更改状态 */
-      applyTx(Action.REPLACE)
+      applyTx(Action.REPLACE);
     }
   }
 
   /** GO */
   function go(delta: number) {
-    globalHistory.go(delta)
+    globalHistory.go(delta);
   }
 
   /** 监听popstate函数 监听go 浏览器前进后退按钮事件 */
-  let blockTx: Transition | null = null
+  let blockTx: Transition | null = null;
   window.addEventListener(POP_STATE, () => {
     if (blockTx) {
       /** 如果存在blockTx 直接调用blocker处理tx */
-      blocker.call(blockTx)
-      blockTx = null
+      blocker.call(blockTx);
+      blockTx = null;
     } else {
       /** 不存在blockTx */
       if (blocker.length) {
         /** 有阻塞 会退 设置blockTx */
         /** 由于此时location已经修改完成 直接获取当前location和index即可 */
-        const [nextLocation, nextIndex] = getCurrentLocationAndIndex()
+        const [nextLocation, nextIndex] = getCurrentLocationAndIndex();
         if (nextIndex !== void 0) {
           /** 计算会退step */
-          const steps = index - nextIndex
-
+          const steps = index - nextIndex;
           /** 封装retry */
           function retry() {
-            go(-steps)
+            go(-steps);
           }
 
           /** 封装blockTx */
           blockTx = {
             location: nextLocation,
             action: Action.POP,
-            retry
-          }
-
+            retry,
+          };
           /** 回退 */
-          go(steps)
+          go(steps);
         } else {
-          warning("请不要绕过history调用 pushState/replaceState")
+          warning("请不要绕过history调用 pushState/replaceState");
         }
       } else {
         /** 没有阻塞 应用tx */
-        applyTx(Action.POP)
+        applyTx(Action.POP);
       }
     }
-  })
+  });
 
   return {
     action,
@@ -631,16 +636,20 @@ export function createHashHistory({
     replace,
     createHref,
     go,
-    back: () => { go(-1) },
-    forward: () => { go(1) },
+    back: () => {
+      go(-1);
+    },
+    forward: () => {
+      go(1);
+    },
     listen: (fn: Listener) => {
-      return listener.listen(fn)
+      return listener.listen(fn);
     },
     block: (fn: Blocker) => {
-      const unblock = blocker.listen(fn)
+      const unblock = blocker.listen(fn);
 
       if (blocker.length > 0) {
-        window.addEventListener(BEFORE_UNLOAD, handleBeforeUnload)
+        window.addEventListener(BEFORE_UNLOAD, handleBeforeUnload);
       }
 
       return () => {
@@ -649,7 +658,6 @@ export function createHashHistory({
           window.removeEventListener(BEFORE_UNLOAD, handleBeforeUnload);
         }
       };
-    }
-  }
-
+    },
+  };
 }
