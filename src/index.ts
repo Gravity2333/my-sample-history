@@ -103,6 +103,15 @@ function readOnly<T>(obj: T) {
 /** warning函数 只告警 不抛Error */
 function warning(message: string) {
   console.error(message);
+
+  try {
+    /**
+     * 欢迎来到调试模式
+     * 你可以再 浏览器devTools中 source / 右侧 勾选 pause on caught exceptions 来在此处暂停
+     * 可以帮助你更好的找到错误抛出位置
+     */
+    throw new Error(message);
+  } catch (e) {}
 }
 
 /**
@@ -484,7 +493,7 @@ export function createHashHistory({
       const url = window.location.href;
       const hashIndex = url.indexOf("#");
       baseHref = hashIndex >= 0 ? url.slice(0, hashIndex) : url;
-      return baseHref
+      return baseHref;
     }
 
     return "";
@@ -532,21 +541,21 @@ export function createHashHistory({
   const listener = new EventCenter<Listener>();
   const blocker = new EventCenter<Blocker>();
 
-    /**
+  /**
    * 获得下一个Location / 创建新的Location
    * 传入to，state
    */
-    function getNextLocation(to: To, state: any) {
-      const nextPath = typeof to === "string" ? parsePath(to) : to;
-      return readOnly<Location>({
-        pathname: location.pathname,
-        search: "",
-        hash: "",
-        ...nextPath,
-        state,
-        key: generateUniqueKey(),
-      });
-    }
+  function getNextLocation(to: To, state: any) {
+    const nextPath = typeof to === "string" ? parsePath(to) : to;
+    return readOnly<Location>({
+      pathname: location.pathname,
+      search: "",
+      hash: "",
+      ...nextPath,
+      state,
+      key: generateUniqueKey(),
+    });
+  }
 
   if (index === void 0) {
     /** 不存在idx 初始化index */
