@@ -107,6 +107,13 @@ function warning(message: string) {
 
 /**
  * 处理浏览器url回撤跳转的情况，让浏览器弹出弹框提示用户
+ * "" 只是一个“标记”，告诉浏览器“显示提示框”。
+
+    实际上它的内容并不重要，关键是被设置过了。
+
+    preventDefault() 以前用来兼容旧浏览器，但现在多数浏览器不再依赖它，returnValue 就足够触发弹框。
+
+    即使你写了 e.returnValue = "abc"，弹框也不会显示 "abc"，浏览器会显示统一的默认提示。
  * @param e
  */
 function handleBeforeUnload(e: any) {
@@ -247,6 +254,8 @@ export function createBrowserHistory({
    */
   function getNextLocation(to: To, state: State): Location {
     /** 获得新的path */
+    // 如果你push 传入一个 {} 那么就是部分替换
+    // 如果你传入一个string 那么就是全量解析并且替换了！
     const nextPath = typeof to === "string" ? parsePath(to) : to;
     /** 以当前的pathname为base，生成location */
     return readOnly<Location>({
@@ -272,6 +281,7 @@ export function createBrowserHistory({
     listener.call({ location, action } as Update);
   }
 
+  // 把Location -> pushState/ReplaceState的参数，即可以存在history stack的格式
   function getHistoryStateAndUrl(
     nextLocation: Location,
     nextIndex: number
@@ -453,22 +463,6 @@ export function createHashHistory({
   }
 
   /**
-   * 获得下一个Location / 创建新的Location
-   * 传入to，state
-   */
-  function getNextLocation(to: To, state: any) {
-    const nextPath = typeof to === "string" ? parsePath(to) : to;
-    return readOnly<Location>({
-      pathname: window.location.pathname,
-      search: "",
-      hash: "",
-      ...nextPath,
-      state,
-      key: generateUniqueKey(),
-    });
-  }
-
-  /**
    * 这是一个和browser不同的地方
    * 如果html文件的head中 包含<base> 标签，一般写法为:
    *  <head>
@@ -537,6 +531,22 @@ export function createHashHistory({
   /** 创建listener和blocker事件中心 */
   const listener = new EventCenter<Listener>();
   const blocker = new EventCenter<Blocker>();
+
+    /**
+   * 获得下一个Location / 创建新的Location
+   * 传入to，state
+   */
+    function getNextLocation(to: To, state: any) {
+      const nextPath = typeof to === "string" ? parsePath(to) : to;
+      return readOnly<Location>({
+        pathname: location.pathname,
+        search: "",
+        hash: "",
+        ...nextPath,
+        state,
+        key: generateUniqueKey(),
+      });
+    }
 
   if (index === void 0) {
     /** 不存在idx 初始化index */
