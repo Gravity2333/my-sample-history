@@ -611,7 +611,7 @@ export function createHashHistory({
 
   /** 监听popstate函数 监听go 浏览器前进后退按钮事件 */
   let blockTx: Transition | null = null;
-  window.addEventListener(POP_STATE, () => {
+  const handlePop = () => {
     if (blockTx) {
       /** 如果存在blockTx 直接调用blocker处理tx */
       blocker.call(blockTx);
@@ -645,6 +645,25 @@ export function createHashHistory({
         /** 没有阻塞 应用tx */
         applyTx(Action.POP);
       }
+    }
+  };
+  // 监听popstate
+  window.addEventListener(POP_STATE, handlePop);
+  // 监听hashchange 兼容性处理！
+  /**
+   * 
+   * 兼容性问题：
+
+      不同浏览器对 popstate 的触发时机不同：
+
+      Chrome 在页面初次加载时不会触发 popstate。
+
+      Safari/旧 IE 在 hash 变化时可能不会触发 popstate。
+   */
+  window.addEventListener(ON_HASH_CHANGE, () => {
+    const [currentLocation] = getCurrentLocationAndIndex();
+    if (createPath(currentLocation) !== createPath(location)) {
+      handlePop();
     }
   });
 
